@@ -1,6 +1,9 @@
-language: ruby 
+language: ruby
 ruby:
-     - 2.6.3 
-script: 
-  - bundle exec rspec
-  - bundle exec standardrb
+  - 2.6.3
+jobs:
+  include:
+    - stage: rspec
+      script: bundle exec rspec
+    - stage: rubocop
+      script: bundle exec standardrb
