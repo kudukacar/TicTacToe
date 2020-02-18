@@ -1,26 +1,35 @@
 require "spec_helper"
 require "tictactoe"
-require "presenter"
-require "fake_standard_out"
 
 RSpec.describe "TicTacToe" do
+  class FakeDisplay
+    attr_reader :lines
+    def initialize
+      @lines = []
+    end
+
+    def output(message)
+      @lines << message
+      nil
+    end
+  end
+
+  class FakePresenter
+    def display_board
+      "displayed_board"
+    end
+  end
+
   describe "#run" do
     it "prints an empty 3 x 3 Tic-Tac-Toe board" do
-      stdout = FakeStandardOut.new
-      display = Display.new(stdout)
-      presenter = Presenter.new
+      display = FakeDisplay.new
+      presenter = FakePresenter.new
       tictactoe = TicTacToe.new(presenter, display)
-      expected_board = <<~BOARD
-          |  |
-        --+--+--
-          |  |
-        --+--+--
-          |  |
-      BOARD
+      expected_message = "displayed_board"
 
       tictactoe.run
 
-      expect(stdout.log).to eq(expected_board)
+      expect(display.lines).to eq([expected_message])
     end
   end
 end

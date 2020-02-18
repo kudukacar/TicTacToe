@@ -1,8 +1,20 @@
 require "spec_helper"
-require "display"
-require "fake_standard_out"
+require "tictactoe"
 
 RSpec.describe Display do
+  class FakeStandardOut
+    attr_reader :log
+  
+    def initialize
+      @log = ""
+    end
+  
+    def puts(message)
+      @log += message
+      nil
+    end
+  end
+  
   describe "#output" do
     it "prints a message" do
       stdout = FakeStandardOut.new

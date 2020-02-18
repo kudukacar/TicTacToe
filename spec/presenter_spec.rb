@@ -1,5 +1,5 @@
 require "spec_helper"
-require "presenter"
+require "tictactoe"
 
 RSpec.describe Presenter do
   describe "#display_board" do
