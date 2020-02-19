@@ -8,7 +8,7 @@ RSpec.describe Board do
 
       board.place_token(4, "X")
 
-      expect(board[3]).to eq("X")
+      expect(board.get(4)).to eq("X")
     end
   end
 end

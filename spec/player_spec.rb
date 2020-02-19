@@ -28,7 +28,7 @@ RSpec.describe Player do
       it "prompts the player for a move" do
         player.selection
 
-        expect(display.messages.length).to eq(1)
+        expect(display.messages).to include(/Please select your move/)
       end
 
       it "returns the player's chosen space" do
@@ -43,7 +43,7 @@ RSpec.describe Player do
       it "prompts the player for a move until receiving a valid move" do
         player.selection
 
-        expect(display.messages.length).to eq(5)
+        expect(display.messages).to contain_exactly(/Please select your move/, /Invalid entry./, /Please select your move/, /Invalid entry./, /Please select your move/)
       end
 
       it "returns the player's chosen space" do

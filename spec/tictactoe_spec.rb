@@ -21,21 +21,7 @@ RSpec.describe TicTacToe do
 
   class FakePresenter
     def display_board(board)
-      "#{board[0]}displayed_board#{board[1]}"
-    end
-  end
-
-  class FakeBoard
-    def initialize
-      @board = [nil, nil]
-    end
-
-    def place_token(pos, token)
-      @board[pos] = token
-    end
-
-    def[](pos)
-      @board[pos]
+      (1..9).map { |i| board.get(i) || "-" }.join("")
     end
   end
 
@@ -46,30 +32,17 @@ RSpec.describe TicTacToe do
   end
 
   describe "#run" do
-    display = TicTacToe::FakeDisplay.new
-    presenter = FakePresenter.new
-    board = FakeBoard.new
-    player = FakePlayer.new
-    tictactoe = TicTacToe.new(presenter, display, board, player)
+    it "shows every state of the board" do
+      display = TicTacToe::FakeDisplay.new
+      presenter = FakePresenter.new
+      board = Board.new
+      player = FakePlayer.new
+      tictactoe = TicTacToe.new(presenter, display, board, player)
+      expected_boards = ["---------", "X--------"]
 
-    tictactoe.run
+      tictactoe.run
 
-    context "before a move" do
-      it "shows an empty 3 x 3 Tic-Tac_Toe board" do
-        expected_message = "displayed_board"
-        expect(display.lines[0]).to eq(expected_message)
-      end
-    end
-
-    context "after a move" do
-      it "records the player's move" do
-        expect(board[1]).to eq("X")
-      end
-
-      it "shows the current state of the 3 x 3 Tic-Tac-Toe board" do
-        expected_message = "displayed_boardX"
-        expect(display.lines[1]).to eq(expected_message)
-      end
+      expect(display.lines).to eq(expected_boards)
     end
   end
 end

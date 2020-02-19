@@ -7,7 +7,7 @@ class Board
     @board[pos - 1] = token
   end
 
-  def [](pos)
-    @board[pos]
+  def get(pos)
+    @board[pos - 1]
   end
 end
