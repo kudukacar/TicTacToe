@@ -24,7 +24,7 @@ class TicTacToe
   end
 
   def play_turn
-    position = @player.move
+    position = @player.selection
     @board.place_token(position, "X")
   end
 end

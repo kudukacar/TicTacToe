@@ -40,7 +40,7 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
-    def move
+    def selection
       1
     end
   end

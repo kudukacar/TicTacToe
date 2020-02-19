@@ -4,7 +4,7 @@ class Board
   end
 
   def place_token(pos, token)
-    @board[pos] = token
+    @board[pos - 1] = token
   end
 
   def [](pos)

@@ -26,13 +26,13 @@ RSpec.describe Player do
       let(:display) { FakeDisplay.new(inputs: ["5"]) }
 
       it "prompts the player for a move" do
-        player.move
+        player.selection
 
         expect(display.messages.length).to eq(1)
       end
 
       it "returns the player's chosen space" do
-        expect(player.move).to eq(4)
+        expect(player.selection).to eq(5)
       end
     end
 
@@ -41,13 +41,13 @@ RSpec.describe Player do
       let(:display) { FakeDisplay.new(inputs: ["0", "?", "5"]) }
 
       it "prompts the player for a move until receiving a valid move" do
-        player.move
+        player.selection
 
         expect(display.messages.length).to eq(5)
       end
 
       it "returns the player's chosen space" do
-        expect(player.move).to eq(4)
+        expect(player.selection).to eq(5)
       end
     end
   end
