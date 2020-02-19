@@ -2,28 +2,47 @@ require "spec_helper"
 require "tictactoe"
 
 RSpec.describe Display do
+  subject(:display) { Display.new(stdout, stdin) }
+
   class FakeStandardOut
-    attr_reader :log
-  
+    attr_reader :messages
+
     def initialize
-      @log = ""
+      @messages = []
     end
-  
+
     def puts(message)
-      @log += message
+      @messages << message
       nil
     end
   end
-  
+
+  class FakeStandardIn
+    def initialize(inputs)
+      @inputs = inputs
+    end
+
+    def gets
+      @inputs.shift
+    end
+  end
+
+  let(:stdout) { FakeStandardOut.new }
+  let(:stdin) { FakeStandardIn.new(["5"]) }
+
   describe "#output" do
     it "prints a message" do
-      stdout = FakeStandardOut.new
-      display = Display.new(stdout)
-      message = "hello"
+      message = "Welcome to Tic-Tac-Toe"
 
       display.output(message)
 
-      expect(stdout.log).to eq("hello")
+      expect(stdout.messages).to eq(["Welcome to Tic-Tac-Toe"])
+    end
+  end
+
+  describe "#input" do
+    it "gets the player's input" do
+      expect(display.input).to eq("5")
     end
   end
 end
