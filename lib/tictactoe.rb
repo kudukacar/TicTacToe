@@ -11,20 +11,21 @@ class TicTacToe
     @player = player
   end
 
+  def run
+    show_board
+    play_turn
+    show_board
+  end
+
+  private
+
   def show_board
     @display.output(@presenter.display_board(@board))
   end
 
   def play_turn
-    selection = @player.move
-    position = selection - 1
+    position = @player.move
     @board.place_token(position, "X")
-  end
-
-  def run
-    show_board
-    play_turn
-    show_board
   end
 end
 

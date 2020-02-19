@@ -3,6 +3,8 @@ require "tictactoe"
 
 RSpec.describe Display do
   subject(:display) { Display.new(stdout, stdin) }
+  let(:stdout) { FakeStandardOut.new }
+  let(:stdin) { FakeStandardIn.new(["5"]) }
 
   class FakeStandardOut
     attr_reader :messages
@@ -26,9 +28,6 @@ RSpec.describe Display do
       @inputs.shift
     end
   end
-
-  let(:stdout) { FakeStandardOut.new }
-  let(:stdin) { FakeStandardIn.new(["5"]) }
 
   describe "#output" do
     it "prints a message" do

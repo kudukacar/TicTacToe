@@ -2,8 +2,6 @@ require "spec_helper"
 require "tictactoe"
 
 RSpec.describe TicTacToe do
-  subject(:tictactoe) { TicTacToe.new(presenter, display, board, player) }
-
   class TicTacToe::FakeDisplay
     attr_reader :lines
 
@@ -43,44 +41,34 @@ RSpec.describe TicTacToe do
 
   class FakePlayer
     def move
-      2
+      1
     end
   end
 
-  describe "#show_board" do
-    let(:display) { TicTacToe::FakeDisplay.new }
-    let(:presenter) { FakePresenter.new }
-    let(:board) { FakeBoard.new }
-    let(:player) { FakePlayer.new }
+  describe "#run" do
+    display = TicTacToe::FakeDisplay.new
+    presenter = FakePresenter.new
+    board = FakeBoard.new
+    player = FakePlayer.new
+    tictactoe = TicTacToe.new(presenter, display, board, player)
 
-    describe "#show_board" do
-      context "before a move" do
-        it "shows an empty 3 x 3 Tic-Tac_Toe board" do
-          expected_message = "displayed_board"
+    tictactoe.run
 
-          tictactoe.show_board
-
-          expect(display.lines).to eq([expected_message])
-        end
-      end
-
-      context "after a move" do
-        it "shows the current state of the 3 x 3 Tic-Tac-Toe board" do
-          expected_message = "displayed_boardX"
-
-          tictactoe.play_turn
-          tictactoe.show_board
-
-          expect(display.lines).to eq([expected_message])
-        end
+    context "before a move" do
+      it "shows an empty 3 x 3 Tic-Tac_Toe board" do
+        expected_message = "displayed_board"
+        expect(display.lines[0]).to eq(expected_message)
       end
     end
 
-    describe "#play_turn" do
+    context "after a move" do
       it "records the player's move" do
-        tictactoe.play_turn
-
         expect(board[1]).to eq("X")
+      end
+
+      it "shows the current state of the 3 x 3 Tic-Tac-Toe board" do
+        expected_message = "displayed_boardX"
+        expect(display.lines[1]).to eq(expected_message)
       end
     end
   end

@@ -14,7 +14,7 @@ class Player
                   end
 
       if selection.between?(1, 9)
-        return selection
+        return selection - 1
       else
         @display.output("Invalid entry.")
       end
