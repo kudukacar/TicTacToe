@@ -56,10 +56,9 @@ RSpec.describe Player do
       let(:player) { Player.new(display) }
       let(:display) { FakeDisplay.new(inputs: ["1", "1", "5"]) }
       let(:board) { Board.new }
-      let(:token) { "X" }
 
       it "prompts the player for a move until receiving an available move" do
-        board.place_token(1, token)
+        board.place_token(1)
         player.selection(board)
 
         expect(display.messages).to contain_exactly(/Please select/, /Selection taken/, \
@@ -67,7 +66,7 @@ RSpec.describe Player do
       end
 
       it "returns the player's chosen space" do
-        board.place_token(1, token)
+        board.place_token(1)
         expect(player.selection(board)).to eq(5)
       end
     end

@@ -6,8 +6,8 @@ class Board
     @tokens = {X: "X", O: "O"}
   end
 
-  def place_token(pos, token)
-    @board[pos - 1] = token
+  def place_token(pos)
+    @board[pos - 1] = next_token
   end
 
   def get(pos)

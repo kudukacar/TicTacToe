@@ -29,8 +29,7 @@ class TicTacToe
 
   def play_turn
     position = player.selection(board)
-    token = board.next_token
-    board.place_token(position, token)
+    board.place_token(position)
   end
 end
 

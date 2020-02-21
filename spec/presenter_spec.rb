@@ -6,7 +6,7 @@ RSpec.describe Presenter do
     it "formats the board" do
       presenter = Presenter.new
       board = Board.new
-      board.place_token(5, "X")
+      board.place_token(5)
       blank_string = " "
       expected_board = <<~BOARD
 
