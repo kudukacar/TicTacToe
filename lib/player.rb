@@ -3,14 +3,22 @@ class Player
     @display = display
   end
 
-  def selection
+  def selection(board)
     loop do
-      @display.output("Please select your move by entering the number (1 - 9) corresponding to an empty space.  The spaces are numbered from the top left (1) to the bottom right (9) of the board.")
-
+      @display.output("Please select your move by entering the number (1 - 9, from top left to bottom right) corresponding to an empty space.")
       selection = input_to_integer(@display.input)
-
-      selection.between?(1, 9) ? (return selection) : @display.output("Invalid entry.")
+      if selection_valid(selection)
+        return selection if selection_available(selection, board)
+      end
     end
+  end
+
+  def selection_valid(pos)
+    pos.between?(1, 9) ? pos : @display.output("Invalid entry.")
+  end
+
+  def selection_available(pos, board)
+    board.is_available?(pos) ? pos : @display.output("Selection taken and not available.")
   end
 
   def input_to_integer(input)

@@ -15,6 +15,8 @@ class TicTacToe
     show_board
     play_turn
     show_board
+    play_turn
+    show_board
   end
 
   private
@@ -24,8 +26,8 @@ class TicTacToe
   end
 
   def play_turn
-    position = @player.selection
-    @board.place_token(position, "X")
+    position = @player.selection(@board)
+    @board.place_token(position, @board.next_token)
   end
 end
 
