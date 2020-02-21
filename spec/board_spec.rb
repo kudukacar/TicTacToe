@@ -13,12 +13,6 @@ RSpec.describe Board do
     end
   end
 
-  describe "#next_token" do
-    it "determines the next token to be placed on the board" do
-      expect(board.next_token).to eq(token)
-    end
-  end
-
   describe "is_available?" do
     context "when the space on the board is not available for a token" do
       it "returns false" do
