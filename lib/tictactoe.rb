@@ -4,6 +4,8 @@ require_relative "./board"
 require_relative "./player"
 
 class TicTacToe
+  attr_reader :presenter, :display, :board, :player
+
   def initialize(presenter, display, board, player)
     @presenter = presenter
     @display = display
@@ -22,12 +24,13 @@ class TicTacToe
   private
 
   def show_board
-    @display.output(@presenter.display_board(@board))
+    display.output(presenter.display_board(board))
   end
 
   def play_turn
-    position = @player.selection(@board)
-    @board.place_token(position, @board.next_token)
+    position = player.selection(board)
+    token = board.next_token
+    board.place_token(position, token)
   end
 end
 

@@ -1,8 +1,24 @@
 require "spec_helper"
 require "tictactoe"
-require "fake_display"
 
 RSpec.describe TicTacToe do
+  class TicTacToe::FakeDisplay
+    attr_reader :messages
+
+    def initialize
+      @messages = []
+    end
+
+    def output(message)
+      @messages << message
+      nil
+    end
+
+    def input
+      :not_used
+    end
+  end
+
   class FakePresenter
     def display_board(board)
       (1..9).map { |i| board.get(i) || "-" }.join("")
@@ -10,21 +26,21 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
-    def initialize(display)
-      @display = display
+    def initialize
+      @inputs = [1, 2]
     end
 
     def selection(board)
-      @display.input
+      @inputs.shift
     end
   end
 
   describe "#run" do
     it "shows every state of the board" do
-      display = FakeDisplay.new(inputs: [1, 2])
+      display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
       board = Board.new
-      player = FakePlayer.new(display)
+      player = FakePlayer.new
       tictactoe = TicTacToe.new(presenter, display, board, player)
       expected_boards = ["---------", "X--------", "XO-------"]
 

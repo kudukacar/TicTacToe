@@ -1,6 +1,9 @@
 class Board
+  attr_reader :tokens
+
   def initialize
     @board = Array.new(9)
+    @tokens = {X: "X", O: "O"}
   end
 
   def place_token(pos, token)
@@ -12,7 +15,7 @@ class Board
   end
 
   def next_token
-    @board.count("X") > @board.count("O") ? "O" : "X"
+    @board.count(tokens[:X]) > @board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
   end
 
   def is_available?(pos)
