@@ -21,4 +21,8 @@ class Board
   def is_available?(pos)
     @board[pos - 1].nil?
   end
+
+  def game_over?
+    @board.none? { |pos| pos.nil? }
+  end
 end

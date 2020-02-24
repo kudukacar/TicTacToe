@@ -15,10 +15,10 @@ class TicTacToe
 
   def run
     show_board
-    play_turn
-    show_board
-    play_turn
-    show_board
+    until board.game_over?
+      play_turn
+      show_board
+    end
   end
 
   private

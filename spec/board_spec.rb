@@ -28,4 +28,26 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe "#next_token" do
+    it "determines the next token to be placed on the board" do
+      expect(board.next_token).to eq(token)
+    end
+  end
+
+  describe "#game_over?" do
+    context "when the board has an available space" do
+      it "returns false" do
+        expect(board.game_over?).to eq(false)
+      end
+    end
+
+    context "when the board does not have an available space" do
+      it "returns true" do
+        (1..9).each { |pos| board.place_token(pos) }
+
+        expect(board.game_over?).to eq(true)
+      end
+    end
+  end
 end
