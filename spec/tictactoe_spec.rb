@@ -3,14 +3,14 @@ require "tictactoe"
 
 RSpec.describe TicTacToe do
   class TicTacToe::FakeDisplay
-    attr_reader :lines
+    attr_reader :messages
 
     def initialize
-      @lines = []
+      @messages = []
     end
 
     def output(message)
-      @lines << message
+      @messages << message
       nil
     end
 
@@ -26,8 +26,12 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
-    def selection
-      1
+    def initialize
+      @inputs = [1, 2]
+    end
+
+    def selection(board)
+      @inputs.shift
     end
   end
 
@@ -38,11 +42,11 @@ RSpec.describe TicTacToe do
       board = Board.new
       player = FakePlayer.new
       tictactoe = TicTacToe.new(presenter, display, board, player)
-      expected_boards = ["---------", "X--------"]
+      expected_boards = ["---------", "X--------", "XO-------"]
 
       tictactoe.run
 
-      expect(display.lines).to eq(expected_boards)
+      expect(display.messages).to eq(expected_boards)
     end
   end
 end
