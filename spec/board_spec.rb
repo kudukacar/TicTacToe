@@ -30,15 +30,49 @@ RSpec.describe Board do
   end
 
   describe "#game_over?" do
-    context "when the board has an available space" do
-      it "returns false" do
-        expect(board.game_over?).to eq(false)
+    def fill_board
+      [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |pos| board.place_token(pos) }
+    end
+
+    def set_diagonal_winner
+      (1..7).each { |pos| board.place_token(pos) }
+    end
+
+    def set_column_winner
+      [1, 2, 4, 3, 7].each { |pos| board.place_token(pos) }
+    end
+
+    def set_row_winner
+      [1, 4, 2, 7, 3].each { |pos| board.place_token(pos) }
+    end
+
+    context "with a diagonal winner" do
+      it "returns true" do
+        set_diagonal_winner
+
+        expect(board.game_over?).to eq(true)
       end
     end
 
-    context "when the board does not have an available space" do
+    context "with a column winner" do
       it "returns true" do
-        (1..9).each { |pos| board.place_token(pos) }
+        set_column_winner
+
+        expect(board.game_over?).to eq(true)
+      end
+    end
+
+    context "with a row winner" do
+      it "returns true" do
+        set_row_winner
+
+        expect(board.game_over?).to eq(true)
+      end
+    end
+
+    context "with a tie" do
+      it "returns true" do
+        fill_board
 
         expect(board.game_over?).to eq(true)
       end

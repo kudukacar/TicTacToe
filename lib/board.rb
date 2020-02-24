@@ -19,12 +19,41 @@ class Board
   end
 
   def game_over?
-    board.none?(&:nil?)
+    win? || tie?
   end
 
   private
 
   def next_token
     board.count(tokens[:X]) > board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
+  end
+
+  def rows
+    [board[0..2], board[3..5], board[6..8]]
+  end
+
+  def columns
+    [
+      [board[0], board[3], board[6]],
+      [board[1], board[4], board[7]],
+      [board[2], board[5], board[6]],
+    ]
+  end
+
+  def diagonals
+    [
+      [board[0], board[4], board[8]],
+      [board[2], board[4], board[6]],
+    ]
+  end
+
+  def tie?
+    board.none?(&:nil?)
+  end
+
+  def win?
+    (rows + columns + diagonals).any? do |triple|
+      triple.all? { |pos| pos == tokens[:X] } || triple.all? { |pos| pos == tokens[:O] }
+    end
   end
 end
