@@ -1,5 +1,5 @@
 class Board
-  attr_reader :tokens
+  attr_reader :board, :tokens
 
   def initialize
     @board = Array.new(9)
@@ -7,22 +7,22 @@ class Board
   end
 
   def place_token(pos)
-    @board[pos - 1] = next_token
+    board[pos - 1] = next_token
   end
 
   def get(pos)
-    @board[pos - 1]
+    board[pos - 1]
   end
 
   def next_token
-    @board.count(tokens[:X]) > @board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
+    board.count(tokens[:X]) > board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
   end
 
   def is_available?(pos)
-    @board[pos - 1].nil?
+    board[pos - 1].nil?
   end
 
   def game_over?
-    @board.none? { |pos| pos.nil? }
+    board.none?(&:nil?)
   end
 end
