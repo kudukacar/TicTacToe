@@ -14,15 +14,17 @@ class Board
     board[pos - 1]
   end
 
-  def next_token
-    board.count(tokens[:X]) > board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
-  end
-
   def is_available?(pos)
     board[pos - 1].nil?
   end
 
   def game_over?
     board.none?(&:nil?)
+  end
+
+  private
+
+  def next_token
+    board.count(tokens[:X]) > board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
   end
 end

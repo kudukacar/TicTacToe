@@ -29,12 +29,6 @@ RSpec.describe Board do
     end
   end
 
-  describe "#next_token" do
-    it "determines the next token to be placed on the board" do
-      expect(board.next_token).to eq(token)
-    end
-  end
-
   describe "#game_over?" do
     context "when the board has an available space" do
       it "returns false" do
