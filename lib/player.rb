@@ -19,12 +19,12 @@ class Player
     end
   end
 
-  def selection_valid(pos)
-    pos.between?(1, 9) ? pos : display.output(MESSAGES[:invalid_entry])
+  def selection_valid(position)
+    position.between?(1, 9) ? position : display.output(MESSAGES[:invalid_entry])
   end
 
-  def selection_available(pos, board)
-    board.is_available?(pos) ? pos : display.output(MESSAGES[:space_taken])
+  def selection_available(position, board)
+    board.is_available?(position) ? position : display.output(MESSAGES[:space_taken])
   end
 
   def input_to_integer(input)

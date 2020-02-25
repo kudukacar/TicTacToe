@@ -20,8 +20,12 @@ RSpec.describe TicTacToe do
   end
 
   class FakePresenter
-    def display_board(board)
+    def board(board)
       (1..9).map { |i| board.get(i) || "-" }.join("")
+    end
+
+    def win_outcome(token)
+      "---#{token} wins!---"
     end
   end
 
@@ -35,11 +39,37 @@ RSpec.describe TicTacToe do
     end
   end
 
+  class TicTacToe::FakeBoard
+    attr_reader :board
+
+    TOKENS = ["X", "O"]
+
+    def initialize
+      @board = Array.new(9)
+    end
+
+    def place_token(position)
+      board[position - 1] = position.odd? ? TOKENS[0] : TOKENS[1]
+    end
+
+    def get(position)
+      board[position - 1]
+    end
+
+    def is_available?(position)
+      true
+    end
+
+    def outcome
+      return "X" if board.count(TOKENS[0]) > 3
+    end
+  end
+
   describe "#run" do
-    it "shows every state of the board" do
+    it "plays the game until an outcome" do
       display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
-      board = Board.new
+      board = TicTacToe::FakeBoard.new
       player = FakePlayer.new
       tictactoe = TicTacToe.new(presenter, display, board, player)
       expected_boards = [
@@ -51,6 +81,7 @@ RSpec.describe TicTacToe do
         "XOXOX----",
         "XOXOXO---",
         "XOXOXOX--",
+        "---X wins!---",
       ]
 
       tictactoe.run

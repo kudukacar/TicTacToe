@@ -15,21 +15,31 @@ class TicTacToe
 
   def run
     show_board
-    until board.game_over?
-      play_turn
-      show_board
-    end
+    play_game
+    show_outcome
   end
 
   private
 
   def show_board
-    display.output(presenter.display_board(board))
+    display.output(presenter.board(board))
   end
 
   def play_turn
     position = player.selection(board)
     board.place_token(position)
+  end
+
+  def play_game
+    until board.outcome
+      play_turn
+      show_board
+    end
+  end
+
+  def show_outcome
+    outcome = board.outcome
+    outcome == true ? display.output(presenter.draw_outcome) : display.output(presenter.win_outcome(outcome))
   end
 end
 
