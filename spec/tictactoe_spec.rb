@@ -27,7 +27,7 @@ RSpec.describe TicTacToe do
 
   class FakePlayer
     def initialize
-      @inputs = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      @inputs = [1, 2, 3, 4, 5, 6, 7]
     end
 
     def selection(board)
@@ -51,8 +51,6 @@ RSpec.describe TicTacToe do
         "XOXOX----",
         "XOXOXO---",
         "XOXOXOX--",
-        "XOXOXOXO-",
-        "XOXOXOXOX",
       ]
 
       tictactoe.run
