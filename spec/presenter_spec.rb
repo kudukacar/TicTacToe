@@ -1,56 +1,92 @@
 require "spec_helper"
 require "tictactoe"
+require "ostruct"
 
-RSpec.describe Presenter do
-  subject(:presenter) { Presenter.new }
+RSpec.describe TextPresenter do
+  subject(:presenter) { TextPresenter.new }
 
-  class Presenter::FakeBoard
-    def initialize
-      @board = Array.new(9)
-    end
-
-    def place_token(position)
-      @board[position - 1] = "X"
-    end
-
+  class TextPresenter::FakeBoard
     def get(position)
-      @board[position - 1]
+      if [1, 2, 3].include?(position)
+        "X"
+      end
     end
   end
 
-  describe "#board" do
-    it "formats the board" do
-      board = Presenter::FakeBoard.new
-      board.place_token(5)
-      blank_string = " "
-      expected_board = <<~BOARD
+  class FakeGame
+    attr_reader :outcome_object
 
-           |   | #{blank_string}
-        ---+---+---
-           | X | #{blank_string}
-        ---+---+---
-           |   | #{blank_string}
+    def initialize(outcome_object)
+      @outcome_object = outcome_object
+    end
 
-      BOARD
-
-      expect(presenter.board(board)).to eq(expected_board)
+    def outcome(board)
+      outcome_object
     end
   end
 
-  describe "#draw_outcome" do
-    it "formats the draw outcome message" do
-      expected_draw_message = "Draw"
+  describe "#present" do
+    context "without an outcome" do
+      it "formats the board" do
+        outcome = OpenStruct.new(status: :in_progress, winner: nil)
+        board = TextPresenter::FakeBoard.new
+        game = FakeGame.new(outcome)
+        blank_string = " "
+        expected_board = <<~BOARD
 
-      expect(presenter.draw_outcome).to include(expected_draw_message)
+           X | X | X
+          ---+---+---
+             |   | #{blank_string}
+          ---+---+---
+             |   | #{blank_string}
+
+        BOARD
+        expected_outcome = ""
+
+        expect(presenter.present(board, game))
+          .to eq(expected_board + expected_outcome)
+      end
     end
-  end
 
-  describe "#win_outcome" do
-    it "formats the win outcome message" do
-      expected_win_message = "win"
-      token = "X"
+    context "when X wins" do
+      it "displays the board and the outcome" do
+        outcome = OpenStruct.new(status: :win, winner: "X")
+        board = TextPresenter::FakeBoard.new
+        game = FakeGame.new(outcome)
+        blank_string = " "
+        expected_board = <<~BOARD
 
-      expect(presenter.win_outcome(token)).to include(expected_win_message)
+           X | X | X
+          ---+---+---
+             |   | #{blank_string}
+          ---+---+---
+             |   | #{blank_string}
+
+        BOARD
+        expected_outcome = "X wins!"
+
+        expect(presenter.present(board, game)).to eq(expected_board + expected_outcome)
+      end
+    end
+
+    context "when O wins" do
+      it "displays the board and the outcome" do
+        outcome = OpenStruct.new(status: :win, winner: "O")
+        board = TextPresenter::FakeBoard.new
+        game = FakeGame.new(outcome)
+
+        expect(presenter.present(board, game)).to include("O wins!")
+      end
+    end
+
+    context "when there is a draw" do
+      it "displays the outcome" do
+        outcome = OpenStruct.new(status: :draw, winner: nil)
+        board = TextPresenter::FakeBoard.new
+        game = FakeGame.new(outcome)
+
+        expect(presenter.present(board, game)).to include("Draw 😕")
+      end
     end
   end
 end
