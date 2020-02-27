@@ -28,7 +28,7 @@ RSpec.describe Player do
     end
 
     def is_available?(position)
-      grid[position - 1].nil?
+      ![1].include?(position)
     end
   end
 
