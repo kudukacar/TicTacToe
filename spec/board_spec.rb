@@ -34,4 +34,71 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe "#outcome" do
+    def set_draw
+      [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |pos| board.place_token(pos) }
+    end
+
+    def set_diagonal_winner
+      [1, 2, 3, 4, 5, 6, 8, 7, 9].each { |position| board.place_token(position) }
+    end
+
+    def set_column_winner
+      [1, 2, 4, 3, 7].each { |position| board.place_token(position) }
+    end
+
+    def set_row_winner
+      [1, 4, 2, 7, 3].each { |position| board.place_token(position) }
+    end
+
+    def set_no_outcome
+      [1, 2, 3].each { |position| board.place_token(position) }
+    end
+
+    context "with a diagonal winner" do
+      it "returns an object with a status of win and the diagonal winner" do
+        set_diagonal_winner
+        outcome = board.outcome
+
+        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+      end
+    end
+
+    context "with a column winner" do
+      it "returns an object with a status of win and the column winner" do
+        set_column_winner
+        outcome = board.outcome
+
+        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+      end
+    end
+
+    context "with a row winner" do
+      it "returns an object with a status of win and the row winner" do
+        set_row_winner
+        outcome = board.outcome
+
+        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+      end
+    end
+
+    context "with a draw" do
+      it "returns an object with a status of draw and a winner of nil" do
+        set_draw
+        outcome = board.outcome
+
+        expect([outcome.status, outcome.winner]).to contain_exactly(:draw, nil)
+      end
+    end
+
+    context "with no outcome" do
+      it "returns an object with a status of in_progress and winner of nil" do
+        set_no_outcome
+        outcome = board.outcome
+
+        expect([outcome.status, outcome.winner]).to contain_exactly(:in_progress, nil)
+      end
+    end
+  end
 end

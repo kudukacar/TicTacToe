@@ -1,5 +1,5 @@
 class TextPresenter
-  def present(board, game)
+  def present(board)
     displayed_board = <<~BOARD
 
        #{display_cell(1, board)} | #{display_cell(2, board)} | #{display_cell(3, board)}
@@ -9,7 +9,7 @@ class TextPresenter
        #{display_cell(7, board)} | #{display_cell(8, board)} | #{display_cell(9, board)}
 
     BOARD
-    displayed_board + display_outcome(board, game)
+    displayed_board + display_outcome(board)
   end
 
   private
@@ -18,8 +18,8 @@ class TextPresenter
     board.get(position) || " "
   end
 
-  def display_outcome(board, game)
-    outcome = game.outcome(board)
+  def display_outcome(board)
+    outcome = board.outcome
     return "#{outcome.winner} wins!" if outcome.status == :win
     return "Draw 😕" if outcome.status == :draw
     ""

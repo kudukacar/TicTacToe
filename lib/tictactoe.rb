@@ -2,17 +2,15 @@ require_relative "./display"
 require_relative "./presenter"
 require_relative "./board"
 require_relative "./player"
-require_relative "./game"
 
 class TicTacToe
-  attr_reader :presenter, :display, :board, :player, :game
+  attr_reader :presenter, :display, :board, :player
 
-  def initialize(presenter, display, board, player, game)
+  def initialize(presenter, display, board, player)
     @presenter = presenter
     @display = display
     @board = board
     @player = player
-    @game = game
   end
 
   def run
@@ -23,7 +21,7 @@ class TicTacToe
   private
 
   def show_board
-    display.output(presenter.present(board, game))
+    display.output(presenter.present(board))
   end
 
   def play_turn
@@ -32,7 +30,7 @@ class TicTacToe
   end
 
   def play_game
-    while game.outcome(board).status == :in_progress
+    while board.outcome.status == :in_progress
       play_turn
       show_board
     end
@@ -44,6 +42,5 @@ if $PROGRAM_NAME == __FILE__
   presenter = TextPresenter.new
   board = Board.new
   player = Player.new(display)
-  game = Game.new
-  TicTacToe.new(presenter, display, board, player, game).run
+  TicTacToe.new(presenter, display, board, player).run
 end
