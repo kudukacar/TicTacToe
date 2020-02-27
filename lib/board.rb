@@ -27,6 +27,10 @@ class Board
     outcome
   end
 
+  def in_progress?
+    outcome.status == :in_progress
+  end
+
   private
 
   def next_token

@@ -46,9 +46,9 @@ RSpec.describe TicTacToe do
       grid[position - 1]
     end
 
-    def outcome
-      return OpenStruct.new(status: :draw, winner: nil) if grid.length > 6
-      OpenStruct.new(status: :in_progress, winner: nil)
+    def in_progress?
+      return true if grid.length <= 6
+      false
     end
   end
 

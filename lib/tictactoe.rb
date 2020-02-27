@@ -30,7 +30,7 @@ class TicTacToe
   end
 
   def play_game
-    while board.outcome.status == :in_progress
+    while board.in_progress?
       play_turn
       show_board
     end

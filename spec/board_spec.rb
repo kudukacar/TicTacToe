@@ -35,11 +35,15 @@ RSpec.describe Board do
     end
   end
 
-  describe "#outcome" do
-    def set_draw
-      [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |pos| board.place_token(pos) }
-    end
+  def set_no_outcome
+    [1, 2, 3].each { |position| board.place_token(position) }
+  end
 
+  def set_draw
+    [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |pos| board.place_token(pos) }
+  end
+
+  describe "#outcome" do
     def set_diagonal_winner
       [1, 2, 3, 4, 5, 6, 8, 7, 9].each { |position| board.place_token(position) }
     end
@@ -52,16 +56,12 @@ RSpec.describe Board do
       [1, 4, 2, 7, 3].each { |position| board.place_token(position) }
     end
 
-    def set_no_outcome
-      [1, 2, 3].each { |position| board.place_token(position) }
-    end
-
     context "with a diagonal winner" do
       it "returns an object with a status of win and the diagonal winner" do
         set_diagonal_winner
         outcome = board.outcome
 
-        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+        expect(outcome).to have_attributes(status: :win, winner: token)
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Board do
         set_column_winner
         outcome = board.outcome
 
-        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+        expect(outcome).to have_attributes(status: :win, winner: token)
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Board do
         set_row_winner
         outcome = board.outcome
 
-        expect([outcome.status, outcome.winner]).to contain_exactly(:win, token)
+        expect(outcome).to have_attributes(status: :win, winner: token)
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe Board do
         set_draw
         outcome = board.outcome
 
-        expect([outcome.status, outcome.winner]).to contain_exactly(:draw, nil)
+        expect(outcome).to have_attributes(status: :draw, winner: nil)
       end
     end
 
@@ -97,8 +97,22 @@ RSpec.describe Board do
         set_no_outcome
         outcome = board.outcome
 
-        expect([outcome.status, outcome.winner]).to contain_exactly(:in_progress, nil)
+        expect(outcome).to have_attributes(status: :in_progress, winner: nil)
       end
+    end
+  end
+
+  describe "in_progress?" do
+    it "returns true if the game is in_progress" do
+      set_no_outcome
+
+      expect(board.in_progress?).to eq(true)
+    end
+
+    it "returns false if the game is over" do
+      set_draw
+
+      expect(board.in_progress?).to eq(false)
     end
   end
 end
