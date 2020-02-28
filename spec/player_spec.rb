@@ -21,14 +21,18 @@ RSpec.describe Player do
   end
 
   class Player::FakeBoard
-    attr_reader :grid
+    attr_reader :selection
 
-    def initialize(grid)
-      @grid = grid
+    def initialize
+      @selection = 1
     end
 
     def is_available?(position)
-      ![1].include?(position)
+      (1..9).cover?(position) unless position == selection
+    end
+
+    def next_token
+      "X"
     end
   end
 
@@ -36,12 +40,12 @@ RSpec.describe Player do
     context "with a valid entry between 1 and 9" do
       let(:player) { Player.new(display) }
       let(:display) { FakeDisplay.new(inputs: ["5"]) }
-      let(:board) { Player::FakeBoard.new([]) }
+      let(:board) { Player::FakeBoard.new }
 
-      it "prompts the player for a move" do
+      it "prompts the next player for a move" do
         player.selection(board)
 
-        expect(display.messages).to include(/Please select your move/)
+        expect(display.messages).to include(/Go X/, /Please select your move/)
       end
 
       it "returns the player's chosen space" do
@@ -52,11 +56,11 @@ RSpec.describe Player do
     context "with an invalid entry" do
       let(:player) { Player.new(display) }
       let(:display) { FakeDisplay.new(inputs: ["0", "?", "5"]) }
-      let(:board) { Player::FakeBoard.new([]) }
-      it "prompts the player for a move until receiving a valid move" do
+      let(:board) { Player::FakeBoard.new }
+      it "prompts the next player for a move until receiving a valid move" do
         player.selection(board)
 
-        expect(display.messages).to contain_exactly(/Please select/, /Invalid entry./, \
+        expect(display.messages).to contain_exactly(/Go X/, /Please select/, /Invalid entry./, \
           /Please select/, /Invalid entry./, /Please select/)
       end
 
@@ -68,12 +72,12 @@ RSpec.describe Player do
     context "with an unavailable entry" do
       let(:player) { Player.new(display) }
       let(:display) { FakeDisplay.new(inputs: ["1", "1", "5"]) }
-      let(:board) { Player::FakeBoard.new(["X"]) }
+      let(:board) { Player::FakeBoard.new }
 
-      it "prompts the player for a move until receiving an available move" do
+      it "prompts the next player for a move until receiving an available move" do
         player.selection(board)
 
-        expect(display.messages).to contain_exactly(/Please select/, /Selection taken/, \
+        expect(display.messages).to contain_exactly(/Go X/, /Please select/, /Selection taken/, \
           /Please select/, /Selection taken/, /Please select/)
       end
 

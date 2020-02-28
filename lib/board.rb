@@ -1,8 +1,6 @@
 require "ostruct"
 
 class Board
-  attr_reader :grid, :tokens
-
   def initialize
     @grid = Array.new(9)
     @tokens = {X: "X", O: "O"}
@@ -31,11 +29,13 @@ class Board
     outcome.status == :in_progress
   end
 
-  private
-
   def next_token
     grid.count(tokens[:X]) > grid.count(tokens[:O]) ? tokens[:O] : tokens[:X]
   end
+
+  private
+
+  attr_reader :grid, :tokens
 
   def draw?
     grid.none?(&:nil?) && !winner

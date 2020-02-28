@@ -3,13 +3,14 @@ require "tictactoe"
 
 RSpec.describe Board do
   subject(:board) { Board.new }
-  let(:token) { "X" }
+  X = "X"
+  O = "O"
 
   describe "#place_token" do
     it "places the player's token on the board corresponding to the chosen space" do
       board.place_token(4)
 
-      expect(board.get(4)).to eq(token)
+      expect(board.get(4)).to eq(X)
     end
   end
 
@@ -40,7 +41,7 @@ RSpec.describe Board do
   end
 
   def set_draw
-    [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |pos| board.place_token(pos) }
+    [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |position| board.place_token(position) }
   end
 
   describe "#outcome" do
@@ -61,7 +62,7 @@ RSpec.describe Board do
         set_diagonal_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: token)
+        expect(outcome).to have_attributes(status: :win, winner: X)
       end
     end
 
@@ -70,7 +71,7 @@ RSpec.describe Board do
         set_column_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: token)
+        expect(outcome).to have_attributes(status: :win, winner: X)
       end
     end
 
@@ -79,7 +80,7 @@ RSpec.describe Board do
         set_row_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: token)
+        expect(outcome).to have_attributes(status: :win, winner: X)
       end
     end
 
@@ -113,6 +114,30 @@ RSpec.describe Board do
       set_draw
 
       expect(board.in_progress?).to eq(false)
+    end
+  end
+
+  describe "next_token" do
+    context "before a move do" do
+      it "returns the X token" do
+        expect(board.next_token).to eq(X)
+      end
+    end
+
+    context "after a move" do
+      it "returns the next token to be played" do
+        board.place_token(1)
+
+        expect(board.next_token).to eq(O)
+      end
+    end
+
+    context "after many moves" do
+      it "returns the next token to be played" do
+        (1..4).each { |position| board.place_token(position) }
+
+        expect(board.next_token).to eq(X)
+      end
     end
   end
 end

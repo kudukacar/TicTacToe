@@ -2,6 +2,7 @@ class Player
   attr_reader :display
 
   MESSAGES = {
+    player_prompt: "Go ",
     select_space: "Please select your move by entering the number (1 - 9, from top left to bottom right) of an empty space.",
     invalid_entry: "Invalid entry.",
     space_taken: "Selection taken and not available.",
@@ -12,6 +13,7 @@ class Player
   end
 
   def selection(board)
+    display.output(MESSAGES[:player_prompt] + board.next_token)
     loop do
       display.output(MESSAGES[:select_space])
       selection = input_to_integer(display.input)
