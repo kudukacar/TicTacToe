@@ -4,10 +4,11 @@ require "ostruct"
 
 RSpec.describe TicTacToe do
   class TicTacToe::FakeDisplay
-    attr_reader :messages
+    attr_reader :messages, :input
 
-    def initialize
+    def initialize(input: [])
       @messages = []
+      @input = input
     end
 
     def output(message)
@@ -16,7 +17,7 @@ RSpec.describe TicTacToe do
     end
 
     def input
-      :not_used
+      @input.shift
     end
   end
 
@@ -27,7 +28,12 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
+    def initialize(moves:)
+      @moves = moves
+    end
+
     def selection(board)
+      @moves.shift
     end
   end
 
@@ -39,7 +45,7 @@ RSpec.describe TicTacToe do
     end
 
     def place_token(position)
-      grid.push("X")
+      grid.push(position)
     end
 
     def get(position)
@@ -57,22 +63,35 @@ RSpec.describe TicTacToe do
       display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
       board = TicTacToe::FakeBoard.new
-      player = FakePlayer.new
-      tictactoe = TicTacToe.new(presenter, display, board, player)
+      player = FakePlayer.new(moves: (1..7).to_a)
+
+      TicTacToe.new(presenter, display, board, player).run
+
       expected_boards = [
         "---------",
-        "X--------",
-        "XX-------",
-        "XXX------",
-        "XXXX-----",
-        "XXXXX----",
-        "XXXXXX---",
-        "XXXXXXX--",
+        "1--------",
+        "12-------",
+        "123------",
+        "1234-----",
+        "12345----",
+        "123456---",
+        "1234567--",
       ]
 
-      tictactoe.run
-
       expect(display.messages).to eq(expected_boards)
+    end
+  end
+
+  describe "integration" do
+    it "ends with X winning the game" do
+      display = TicTacToe::FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
+      presenter = TextPresenter.new
+      board = Board.new
+      player = Player.new(display)
+
+      TicTacToe.new(presenter, display, board, player).run
+      
+      expect(display.messages).to include(/X wins/)
     end
   end
 end
