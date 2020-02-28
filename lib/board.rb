@@ -1,59 +1,63 @@
+require "ostruct"
+
 class Board
-  attr_reader :board, :tokens
+  attr_reader :grid, :tokens
 
   def initialize
-    @board = Array.new(9)
+    @grid = Array.new(9)
     @tokens = {X: "X", O: "O"}
   end
 
-  def place_token(pos)
-    board[pos - 1] = next_token
+  def place_token(position)
+    grid[position - 1] = next_token
   end
 
-  def get(pos)
-    board[pos - 1]
+  def get(position)
+    grid[position - 1]
   end
 
-  def is_available?(pos)
-    board[pos - 1].nil?
+  def is_available?(position)
+    grid[position - 1].nil?
   end
 
-  def game_over?
-    win? || tie?
+  def outcome
+    outcome = OpenStruct.new(status: :in_progress, winner: winner)
+    outcome.status = :win if winner
+    outcome.status = :draw if draw?
+    outcome
+  end
+
+  def in_progress?
+    outcome.status == :in_progress
   end
 
   private
 
   def next_token
-    board.count(tokens[:X]) > board.count(tokens[:O]) ? tokens[:O] : tokens[:X]
+    grid.count(tokens[:X]) > grid.count(tokens[:O]) ? tokens[:O] : tokens[:X]
+  end
+
+  def draw?
+    grid.none?(&:nil?) && !winner
+  end
+
+  def winner
+    (rows + columns + diagonals).each do |triple|
+      return tokens[:X] if triple.all? { |position| get(position) == tokens[:X] }
+      return tokens[:O] if triple.all? { |position| get(position) == tokens[:O] }
+    end
+    nil
   end
 
   def rows
-    [board[0..2], board[3..5], board[6..8]]
+    [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
   end
 
   def columns
-    [
-      [board[0], board[3], board[6]],
-      [board[1], board[4], board[7]],
-      [board[2], board[5], board[6]],
-    ]
+    [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
   end
 
   def diagonals
-    [
-      [board[0], board[4], board[8]],
-      [board[2], board[4], board[6]],
-    ]
-  end
-
-  def tie?
-    board.none?(&:nil?)
-  end
-
-  def win?
-    (rows + columns + diagonals).any? do |triple|
-      triple.all? { |pos| pos == tokens[:X] } || triple.all? { |pos| pos == tokens[:O] }
-    end
+    [[1, 5, 9], [3, 5, 7]]
   end
 end

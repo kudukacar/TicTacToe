@@ -1,6 +1,6 @@
-class Presenter
-  def display_board(board)
-    <<~BOARD
+class TextPresenter
+  def present(board)
+    displayed_board = <<~BOARD
 
        #{display_cell(1, board)} | #{display_cell(2, board)} | #{display_cell(3, board)}
       ---+---+---
@@ -9,11 +9,19 @@ class Presenter
        #{display_cell(7, board)} | #{display_cell(8, board)} | #{display_cell(9, board)}
 
     BOARD
+    displayed_board + display_outcome(board)
   end
 
   private
 
-  def display_cell(pos, board)
-    board.get(pos) || " "
+  def display_cell(position, board)
+    board.get(position) || " "
+  end
+
+  def display_outcome(board)
+    outcome = board.outcome
+    return "#{outcome.winner} wins!" if outcome.status == :win
+    return "Draw 😕" if outcome.status == :draw
+    ""
   end
 end

@@ -1,5 +1,6 @@
 require "spec_helper"
 require "tictactoe"
+require "ostruct"
 
 RSpec.describe TicTacToe do
   class TicTacToe::FakeDisplay
@@ -20,37 +21,53 @@ RSpec.describe TicTacToe do
   end
 
   class FakePresenter
-    def display_board(board)
+    def present(board)
       (1..9).map { |i| board.get(i) || "-" }.join("")
     end
   end
 
   class FakePlayer
+    def selection(board)
+    end
+  end
+
+  class TicTacToe::FakeBoard
+    attr_reader :grid
+
     def initialize
-      @inputs = [1, 2, 3, 4, 5, 6, 7]
+      @grid = []
     end
 
-    def selection(board)
-      @inputs.shift
+    def place_token(position)
+      grid.push("X")
+    end
+
+    def get(position)
+      grid[position - 1]
+    end
+
+    def in_progress?
+      return true if grid.length <= 6
+      false
     end
   end
 
   describe "#run" do
-    it "shows every state of the board" do
+    it "plays the game until an outcome" do
       display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
-      board = Board.new
+      board = TicTacToe::FakeBoard.new
       player = FakePlayer.new
       tictactoe = TicTacToe.new(presenter, display, board, player)
       expected_boards = [
         "---------",
         "X--------",
-        "XO-------",
-        "XOX------",
-        "XOXO-----",
-        "XOXOX----",
-        "XOXOXO---",
-        "XOXOXOX--",
+        "XX-------",
+        "XXX------",
+        "XXXX-----",
+        "XXXXX----",
+        "XXXXXX---",
+        "XXXXXXX--",
       ]
 
       tictactoe.run
