@@ -8,7 +8,7 @@ RSpec.describe Board do
 
   describe "#place_token" do
     it "places the player's token on the board corresponding to the chosen space" do
-      board.place_token(4)
+      board.place_token(4, X)
 
       expect(board.get(4)).to eq(X)
     end
@@ -23,7 +23,7 @@ RSpec.describe Board do
   describe "is_available?" do
     context "when the space on the board is not available for a token" do
       it "returns false" do
-        board.place_token(1)
+        board.place_token(1, X)
 
         expect(board.is_available?(1)).to eq(false)
       end
@@ -37,24 +37,29 @@ RSpec.describe Board do
   end
 
   def set_no_outcome
-    [1, 2, 3].each { |position| board.place_token(position) }
+    [1, 3].each { |position| board.place_token(position, X) }
+    board.place_token(2, O)
   end
 
   def set_draw
-    [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |position| board.place_token(position) }
+    [1, 3, 6, 7, 8].each { |position| board.place_token(position, X) }
+    [2, 4, 5, 9].each { |position| board.place_token(position, O) }
   end
 
   describe "#outcome" do
     def set_diagonal_winner
-      [1, 2, 3, 4, 5, 6, 8, 7, 9].each { |position| board.place_token(position) }
+      [1, 3, 5, 8, 9].each { |position| board.place_token(position, X) }
+      [2, 4, 6, 7].each { |position| board.place_token(position, O) }
     end
 
     def set_column_winner
-      [1, 2, 4, 3, 7].each { |position| board.place_token(position) }
+      [1, 4, 7].each { |position| board.place_token(position, X) }
+      [2, 3].each { |position| board.place_token(position, O) }
     end
 
     def set_row_winner
-      [1, 4, 2, 7, 3].each { |position| board.place_token(position) }
+      [1, 2, 3].each { |position| board.place_token(position, X) }
+      [4, 7].each { |position| board.place_token(position, O) }
     end
 
     context "with a diagonal winner" do
@@ -114,30 +119,6 @@ RSpec.describe Board do
       set_draw
 
       expect(board.in_progress?).to eq(false)
-    end
-  end
-
-  describe "next_token" do
-    context "before a move do" do
-      it "returns the X token" do
-        expect(board.next_token).to eq(X)
-      end
-    end
-
-    context "after a move" do
-      it "returns the next token to be played" do
-        board.place_token(1)
-
-        expect(board.next_token).to eq(O)
-      end
-    end
-
-    context "after many moves" do
-      it "returns the next token to be played" do
-        (1..4).each { |position| board.place_token(position) }
-
-        expect(board.next_token).to eq(X)
-      end
     end
   end
 end

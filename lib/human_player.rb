@@ -1,5 +1,5 @@
-class Player
-  attr_reader :display
+class HumanPlayer
+  attr_reader :display, :token
 
   MESSAGES = {
     player_prompt: "Go ",
@@ -8,8 +8,9 @@ class Player
     space_taken: "Selection taken and not available.",
   }
 
-  def initialize(display)
+  def initialize(display, token)
     @display = display
+    @token = token
   end
 
   def selection(board)
@@ -22,7 +23,7 @@ class Player
   end
 
   def player_prompt(board)
-    display.output(MESSAGES[:player_prompt] + board.next_token)
+    display.output(MESSAGES[:player_prompt] + token)
   end
 
   def selection_prompt

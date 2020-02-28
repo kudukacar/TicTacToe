@@ -28,8 +28,11 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
-    def initialize(moves:)
+    attr_reader :token
+
+    def initialize(moves:, token:)
       @moves = moves
+      @token = token
     end
 
     def selection(board)
@@ -44,8 +47,8 @@ RSpec.describe TicTacToe do
       @grid = []
     end
 
-    def place_token(position)
-      grid.push(position)
+    def place_token(position, token)
+      grid.push(token)
     end
 
     def get(position)
@@ -63,19 +66,21 @@ RSpec.describe TicTacToe do
       display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
       board = TicTacToe::FakeBoard.new
-      player = FakePlayer.new(moves: (1..7).to_a)
+      player = FakePlayer.new(moves: [1, 3, 5, 7], token: "X")
+      other_player = FakePlayer.new(moves: [2, 4, 6], token: "O")
+      players = [player, other_player]
 
-      TicTacToe.new(presenter, display, board, player).run
+      TicTacToe.new(presenter, display, board, players).run
 
       expected_boards = [
         "---------",
-        "1--------",
-        "12-------",
-        "123------",
-        "1234-----",
-        "12345----",
-        "123456---",
-        "1234567--",
+        "X--------",
+        "XO-------",
+        "XOX------",
+        "XOXO-----",
+        "XOXOX----",
+        "XOXOXO---",
+        "XOXOXOX--",
       ]
 
       expect(display.messages).to eq(expected_boards)
@@ -87,10 +92,12 @@ RSpec.describe TicTacToe do
       display = TicTacToe::FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
-      player = Player.new(display)
+      player = HumanPlayer.new(display, "X")
+      other_player = HumanPlayer.new(display, "O")
+      players = [player, other_player]
 
-      TicTacToe.new(presenter, display, board, player).run
-      
+      TicTacToe.new(presenter, display, board, players).run
+
       expect(display.messages).to include(/X wins/)
     end
   end
