@@ -3,6 +3,9 @@ require "tictactoe"
 require "ostruct"
 
 RSpec.describe TicTacToe do
+  X = "X"
+  O = "O"
+
   class TicTacToe::FakeDisplay
     attr_reader :messages, :input
 
@@ -55,9 +58,9 @@ RSpec.describe TicTacToe do
       grid[position - 1]
     end
 
-    def in_progress?
-      return true if grid.length <= 6
-      false
+    def outcome
+      return OpenStruct.new(status: :win, winner: X) if grid.length > 6
+      OpenStruct.new(status: :in_progress, winner: nil)
     end
   end
 
@@ -66,8 +69,8 @@ RSpec.describe TicTacToe do
       display = TicTacToe::FakeDisplay.new
       presenter = FakePresenter.new
       board = TicTacToe::FakeBoard.new
-      player = FakePlayer.new(moves: [1, 3, 5, 7], token: "X")
-      other_player = FakePlayer.new(moves: [2, 4, 6], token: "O")
+      player = FakePlayer.new(moves: [1, 3, 5, 7], token: X)
+      other_player = FakePlayer.new(moves: [2, 4, 6], token: O)
       players = [player, other_player]
 
       TicTacToe.new(presenter, display, board, players).run
@@ -92,8 +95,8 @@ RSpec.describe TicTacToe do
       display = TicTacToe::FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
-      player = HumanPlayer.new(display, "X")
-      other_player = HumanPlayer.new(display, "O")
+      player = HumanPlayer.new(display: display, token: X)
+      other_player = HumanPlayer.new(display: display, token: O)
       players = [player, other_player]
 
       TicTacToe.new(presenter, display, board, players).run

@@ -11,7 +11,7 @@ RSpec.describe ComputerPlayer do
 
   describe "#selection" do
     it "returns a selection available on the board" do
-      player = ComputerPlayer.new("O")
+      player = ComputerPlayer.new(token: "O")
       board = ComputerPlayer::FakeBoard.new
 
       expect(player.selection(board)).to eq(4)

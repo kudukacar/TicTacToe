@@ -1,7 +1,7 @@
 class ComputerPlayer
   attr_reader :token
 
-  def initialize(token)
+  def initialize(token:)
     @token = token
   end
 

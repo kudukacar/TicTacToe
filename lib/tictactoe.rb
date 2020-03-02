@@ -25,19 +25,21 @@ class TicTacToe
     display.output(presenter.present(board))
   end
 
-  def play_turn(turns)
-    current_player = players[turns % 2]
-    position = current_player.selection(board)
-    board.place_token(position, current_player.token)
+  def play_turn(player)
+    position = player.selection(board)
+    board.place_token(position, player.token)
   end
 
   def play_game
-    turns = 0
-    while board.in_progress?
-      play_turn(turns)
+    players.cycle do |player|
+      play_turn(player)
       show_board
-      turns += 1
+      break unless in_progress?
     end
+  end
+
+  def in_progress?
+    board.outcome.status == :in_progress
   end
 end
 
@@ -45,8 +47,8 @@ if $PROGRAM_NAME == __FILE__
   display = Display.new($stdout, $stdin)
   presenter = TextPresenter.new
   board = Board.new
-  player = HumanPlayer.new(display, "X")
-  other_player = ComputerPlayer.new("O")
-  players = [player, other_player]
+  first_player = HumanPlayer.new(display: display, token: "X")
+  second_player = ComputerPlayer.new(token: "O")
+  players = [first_player, second_player]
   TicTacToe.new(presenter, display, board, players).run
 end

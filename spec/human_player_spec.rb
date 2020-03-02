@@ -2,7 +2,7 @@ require "spec_helper"
 require "tictactoe"
 
 RSpec.describe HumanPlayer do
-  subject(:player) { HumanPlayer.new(display, token) }
+  subject(:player) { HumanPlayer.new(display: display, token: token) }
   let(:token) { "X" }
 
   class FakeDisplay

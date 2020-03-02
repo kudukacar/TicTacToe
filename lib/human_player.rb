@@ -8,7 +8,7 @@ class HumanPlayer
     space_taken: "Selection taken and not available.",
   }
 
-  def initialize(display, token)
+  def initialize(display:, token:)
     @display = display
     @token = token
   end
