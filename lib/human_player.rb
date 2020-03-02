@@ -13,16 +13,18 @@ class HumanPlayer
     @token = token
   end
 
-  def selection(board)
-    player_prompt(board)
+  def selection(validator)
+    player_prompt
     loop do
       selection_prompt
-      selection = input_to_integer(display.input)
-      return selection if selection_valid(selection) && selection_available(selection, board)
+      selection = selection_valid(display.input, validator)
+      return selection if selection && selection_available(selection, validator)
     end
   end
 
-  def player_prompt(board)
+  private
+
+  def player_prompt
     display.output(MESSAGES[:player_prompt] + token)
   end
 
@@ -30,12 +32,12 @@ class HumanPlayer
     display.output(MESSAGES[:select_space])
   end
 
-  def selection_valid(position)
-    position.between?(1, 9) ? position : display.output(MESSAGES[:invalid_entry])
+  def selection_valid(selection, validator)
+    validator.valid(selection) || display.output(MESSAGES[:invalid_entry])
   end
 
-  def selection_available(position, board)
-    board.is_available?(position) ? position : display.output(MESSAGES[:space_taken])
+  def selection_available(selection, validator)
+    validator.available(selection) || display.output(MESSAGES[:space_taken])
   end
 
   def input_to_integer(input)

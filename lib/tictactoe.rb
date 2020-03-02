@@ -1,17 +1,18 @@
 require_relative "./display"
 require_relative "./presenter"
 require_relative "./board"
-require_relative "./human_player"
-require_relative "./computer_player"
+require_relative "./player"
+require_relative "./validator"
 
 class TicTacToe
-  attr_reader :presenter, :display, :board, :players
+  attr_reader :presenter, :display, :board, :players, :validator
 
-  def initialize(presenter, display, board, players)
+  def initialize(presenter, display, board, players, validator)
     @presenter = presenter
     @display = display
     @board = board
     @players = players
+    @validator = validator
   end
 
   def run
@@ -26,7 +27,7 @@ class TicTacToe
   end
 
   def play_turn(player)
-    position = player.selection(board)
+    position = player.selection(validator)
     board.place_token(position, player.token)
   end
 
@@ -50,5 +51,6 @@ if $PROGRAM_NAME == __FILE__
   first_player = HumanPlayer.new(display: display, token: "X")
   second_player = ComputerPlayer.new(token: "O")
   players = [first_player, second_player]
-  TicTacToe.new(presenter, display, board, players).run
+  validator = SelectionValidator.new(board)
+  TicTacToe.new(presenter, display, board, players, validator).run
 end

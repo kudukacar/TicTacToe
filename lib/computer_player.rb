@@ -6,9 +6,7 @@ class ComputerPlayer
   end
 
   def selection(board)
-    loop do
-      selection = rand(1..9)
-      return selection if board.is_available?(selection)
-    end
+    available_positions = (1..9).to_a.filter { |position| board.is_available?(position) }
+    available_positions.sample
   end
 end

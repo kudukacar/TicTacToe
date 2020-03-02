@@ -6,7 +6,7 @@ RSpec.describe TicTacToe do
   X = "X"
   O = "O"
 
-  class TicTacToe::FakeDisplay
+  class FakeDisplay
     attr_reader :messages, :input
 
     def initialize(input: [])
@@ -38,12 +38,18 @@ RSpec.describe TicTacToe do
       @token = token
     end
 
-    def selection(board)
-      @moves.shift
+    def selection(validator)
+      validator.available(@moves.shift)
     end
   end
 
-  class TicTacToe::FakeBoard
+  class ValidatorWithAllAvailable
+    def available(selection)
+      selection
+    end
+  end
+
+  class BoardWithOutcomes
     attr_reader :grid
 
     def initialize
@@ -66,14 +72,15 @@ RSpec.describe TicTacToe do
 
   describe "#run" do
     it "plays the game until an outcome" do
-      display = TicTacToe::FakeDisplay.new
+      display = FakeDisplay.new
       presenter = FakePresenter.new
-      board = TicTacToe::FakeBoard.new
+      board = BoardWithOutcomes.new
       player = FakePlayer.new(moves: [1, 3, 5, 7], token: X)
       other_player = FakePlayer.new(moves: [2, 4, 6], token: O)
       players = [player, other_player]
+      validator = ValidatorWithAllAvailable.new
 
-      TicTacToe.new(presenter, display, board, players).run
+      TicTacToe.new(presenter, display, board, players, validator).run
 
       expected_boards = [
         "---------",
@@ -92,14 +99,15 @@ RSpec.describe TicTacToe do
 
   describe "integration" do
     it "ends with X winning the game" do
-      display = TicTacToe::FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
+      display = FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
       player = HumanPlayer.new(display: display, token: X)
       other_player = HumanPlayer.new(display: display, token: O)
       players = [player, other_player]
+      validator = SelectionValidator.new(board)
 
-      TicTacToe.new(presenter, display, board, players).run
+      TicTacToe.new(presenter, display, board, players, validator).run
 
       expect(display.messages).to include(/X wins/)
     end
