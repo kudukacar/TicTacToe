@@ -3,42 +3,50 @@ require "tictactoe"
 require "ostruct"
 
 RSpec.describe HumanPlayer do
-  subject(:player) { HumanPlayer.new(display: display, token: token, validator: validator) }
+  subject(:player) { HumanPlayer.new(display: display, token: token, validator: validator, parse_input: parse_input) }
   let(:token) { "X" }
 
-  class FakeDisplay
+  class DisplayWithOnlyOutput
     attr_reader :messages, :input
 
-    def initialize(input: [])
+    def initialize
       @messages = []
-      @input = input
     end
 
     def output(message)
       @messages << message
       nil
     end
+  end
 
-    def input
-      @input.shift
+  class FakeParseInput
+    attr_reader :inputs
+
+    def initialize(inputs: [])
+      @inputs = inputs
+    end
+
+    def input_to_integer
+      inputs.shift.to_i
     end
   end
 
   class BoardWithNoMethods end
 
   class ValidatorWithoutOneAvailable
-    def validate(selection, board)
-      return OpenStruct.new(status: :invalid_entry, position: nil) unless selection.between?(1, 9)
-      return OpenStruct.new(status: :space_taken, position: nil) if selection == 1
-      OpenStruct.new(position: selection)
+    def validate_board_position(selection, board)
+      return "Invalid entry." if selection == 0
+      return "Selection taken" if selection == 1
+      selection
     end
   end
 
   describe "#selection" do
     context "with a valid entry between 1 and 9" do
-      let(:display) { FakeDisplay.new(input: ["5"]) }
+      let(:display) { DisplayWithOnlyOutput.new }
       let(:validator) { ValidatorWithoutOneAvailable.new }
       let(:board) { BoardWithNoMethods.new }
+      let(:parse_input) { FakeParseInput.new(inputs: ["5"]) }
 
       it "prompts the next player for a move" do
         player.selection(board)
@@ -52,9 +60,10 @@ RSpec.describe HumanPlayer do
     end
 
     context "with an invalid entry" do
-      let(:display) { FakeDisplay.new(input: ["0", "?", "5"]) }
+      let(:display) { DisplayWithOnlyOutput.new }
       let(:validator) { ValidatorWithoutOneAvailable.new }
       let(:board) { BoardWithNoMethods.new }
+      let(:parse_input) { FakeParseInput.new(inputs: ["0", "?", "5"]) }
 
       it "prompts the next player for a move until receiving a valid move" do
         player.selection(board)
@@ -69,9 +78,10 @@ RSpec.describe HumanPlayer do
     end
 
     context "with an unavailable entry" do
-      let(:display) { FakeDisplay.new(input: ["1", "1", "5"]) }
+      let(:display) { DisplayWithOnlyOutput.new }
       let(:validator) { ValidatorWithoutOneAvailable.new }
       let(:board) { BoardWithNoMethods.new }
+      let(:parse_input) { FakeParseInput.new(inputs: ["1", "1", "5"]) }
 
       it "prompts the next player for a move until receiving an available move" do
         player.selection(board)

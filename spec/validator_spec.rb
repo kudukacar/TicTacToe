@@ -1,6 +1,5 @@
 require "spec_helper"
 require "tictactoe"
-require "ostruct"
 
 RSpec.describe SelectionValidator do
   subject(:validator) { SelectionValidator.new }
@@ -11,30 +10,50 @@ RSpec.describe SelectionValidator do
     end
   end
 
-  describe "#validate" do
+  describe "#validate_board_position" do
     let(:board) { BoardWithOneAvailable.new }
 
     context "if the selection is not between 1 and 9" do
-      it "returns an object with a status of invalid_entry and a position of nil" do
+      it "returns an error message of invalid entry" do
         selection = 10
 
-        expect(validator.validate(selection, board)).to have_attributes(status: :invalid_entry, position: nil)
+        expect(validator.validate_board_position(selection, board)).to include("Invalid")
       end
     end
 
     context "if the selection is between 1 and 9 and is available on the board" do
-      it "returns an object with the selection" do
+      it "returns the selection" do
         selection = 1
 
-        expect(validator.validate(selection, board)).to have_attributes(position: 1)
+        expect(validator.validate_board_position(selection, board)).to eq(1)
       end
     end
 
     context "if the selection is between 1 and 9 but not available" do
-      it "returns an object with a status of :space_taken and a position of nil" do
+      it "returns an error message of selection taken" do
         selection = 2
 
-        expect(validator.validate(selection, board)).to have_attributes(status: :space_taken, position: nil)
+        expect(validator.validate_board_position(selection, board)).to include("Selection taken")
+      end
+    end
+  end
+
+  describe "#validate_game_option" do
+    context "if the selection is between one and the options length" do
+      it "returns the selection" do
+        selection = 1
+        options_count = 2
+
+        expect(validator.validate_game_option(selection, options_count)).to eq(1)
+      end
+    end
+
+    context "if the selection is not between one and the options length" do
+      it "returns an error message of invalid entry" do
+        selection = 4
+        options_count = 2
+
+        expect(validator.validate_game_option(selection, options_count)).to include("Invalid")
       end
     end
   end

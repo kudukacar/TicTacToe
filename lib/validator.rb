@@ -1,9 +1,17 @@
-require "ostruct"
-
 class SelectionValidator
-  def validate(selection, board)
-    return OpenStruct.new(status: :invalid_entry, position: nil) unless selection.between?(1, 9)
-    return OpenStruct.new(status: :space_taken, position: nil) unless board.is_available?(selection)
-    OpenStruct.new(position: selection)
+  ERROR_MESSAGES = {
+    invalid_entry: "Invalid entry.",
+    space_taken: "Selection taken and not available.",
+  }
+
+  def validate_board_position(selection, board)
+    return ERROR_MESSAGES[:invalid_entry] unless selection.between?(1, 9)
+    return ERROR_MESSAGES[:space_taken] unless board.is_available?(selection)
+    selection
+  end
+
+  def validate_game_option(selection, options_count)
+    return ERROR_MESSAGES[:invalid_entry] unless selection.between?(1, options_count)
+    selection
   end
 end

@@ -3,9 +3,10 @@ require_relative "./presenter"
 require_relative "./board"
 require_relative "./player"
 require_relative "./validator"
+require_relative "./parse_input"
 
 class TicTacToe
-  attr_reader :presenter, :display, :board, :players, :validator
+  attr_reader :presenter, :display, :board, :players
 
   def initialize(presenter, display, board, players)
     @presenter = presenter
@@ -48,7 +49,8 @@ if $PROGRAM_NAME == __FILE__
   presenter = TextPresenter.new
   board = Board.new
   validator = SelectionValidator.new
-  first_player = HumanPlayer.new(display: display, token: "X", validator: validator)
+  parse_input = ParseInput.new(display)
+  first_player = HumanPlayer.new(display: display, token: "X", validator: validator, parse_input: parse_input)
   second_player = ComputerPlayer.new(token: "O")
   players = [first_player, second_player]
   TicTacToe.new(presenter, display, board, players).run
