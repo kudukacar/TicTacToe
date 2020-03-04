@@ -1,5 +1,5 @@
 class HumanPlayer
-  attr_reader :display, :token
+  attr_reader :display, :token, :validator
 
   MESSAGES = {
     player_prompt: "Go ",
@@ -8,17 +8,18 @@ class HumanPlayer
     space_taken: "Selection taken and not available.",
   }
 
-  def initialize(display:, token:)
+  def initialize(display:, token:, validator:)
     @display = display
     @token = token
+    @validator = validator
   end
 
-  def selection(validator)
+  def selection(board)
     player_prompt
     loop do
       selection_prompt
-      selection = selection_valid(display.input, validator)
-      return selection if selection && selection_available(selection, validator)
+      selection = input_to_integer(display.input)
+      return selection if validate_selection(selection, board)
     end
   end
 
@@ -32,12 +33,10 @@ class HumanPlayer
     display.output(MESSAGES[:select_space])
   end
 
-  def selection_valid(selection, validator)
-    validator.valid(selection) || display.output(MESSAGES[:invalid_entry])
-  end
-
-  def selection_available(selection, validator)
-    validator.available(selection) || display.output(MESSAGES[:space_taken])
+  def validate_selection(selection, board)
+    validation_result = validator.validate(selection, board)
+    return selection if validation_result.position
+    display.output(MESSAGES[validation_result.status])
   end
 
   def input_to_integer(input)

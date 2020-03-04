@@ -7,12 +7,11 @@ require_relative "./validator"
 class TicTacToe
   attr_reader :presenter, :display, :board, :players, :validator
 
-  def initialize(presenter, display, board, players, validator)
+  def initialize(presenter, display, board, players)
     @presenter = presenter
     @display = display
     @board = board
     @players = players
-    @validator = validator
   end
 
   def run
@@ -27,7 +26,7 @@ class TicTacToe
   end
 
   def play_turn(player)
-    position = player.selection(validator)
+    position = player.selection(board)
     board.place_token(position, player.token)
   end
 
@@ -48,9 +47,9 @@ if $PROGRAM_NAME == __FILE__
   display = Display.new($stdout, $stdin)
   presenter = TextPresenter.new
   board = Board.new
-  first_player = HumanPlayer.new(display: display, token: "X")
+  validator = SelectionValidator.new
+  first_player = HumanPlayer.new(display: display, token: "X", validator: validator)
   second_player = ComputerPlayer.new(token: "O")
   players = [first_player, second_player]
-  validator = SelectionValidator.new(board)
-  TicTacToe.new(presenter, display, board, players, validator).run
+  TicTacToe.new(presenter, display, board, players).run
 end

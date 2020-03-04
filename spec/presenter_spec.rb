@@ -78,36 +78,4 @@ RSpec.describe TextPresenter do
       end
     end
   end
-
-  describe "#show_error" do
-    context "when the entry is invalid" do
-      it "displays the invalid error message" do
-        error = :invalid_entry
-
-        expect(presenter.show_error(error)).to include("Invalid")
-      end
-    end
-
-    context "when the entry is taken" do 
-      it "displays the space_taken error message" do
-        error = :space_taken
-
-        expect(presenter.show_error(error)).to include("Selection taken")
-      end
-    end
-  end
-
-  describe "#prompt_player" do
-    it "prompts the appropriate player" do
-      player = "X"
-
-      expect(presenter.prompt_player(player)).to include("X")
-    end
-  end
-
-  describe "#select_position" do
-    it "prompts the player to select a position" do
-      expect(presenter.select_position).to include("Please select")
-    end
-  end
 end

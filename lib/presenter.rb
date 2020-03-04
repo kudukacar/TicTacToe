@@ -1,9 +1,4 @@
 class TextPresenter
-  ERROR_MESSAGES = {
-    invalid_entry: "Invalid entry.",
-    space_taken: "Selection taken and not available.",
-  }
-
   def present(board)
     displayed_board = <<~BOARD
 
@@ -15,18 +10,6 @@ class TextPresenter
 
     BOARD
     displayed_board + display_outcome(board)
-  end
-
-  def prompt_player(player)
-    "Go #{player}"
-  end
-
-  def select_position
-    "Please select your move by entering the number (1 - 9, from top left to bottom right) of an empty space."
-  end
-
-  def show_error(error)
-    ERROR_MESSAGES[error]
   end
 
   private

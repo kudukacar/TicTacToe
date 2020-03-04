@@ -22,15 +22,15 @@ RSpec.describe SelectionValidator do
       end
     end
 
-    context "if the selection between 1 and 9 and is available on the board" do
-      it "returns an object with a status of valid and the position" do
+    context "if the selection is between 1 and 9 and is available on the board" do
+      it "returns an object with the selection" do
         selection = 1
 
-        expect(validator.validate(selection, board)).to have_attributes(status: :valid, position: 1)
+        expect(validator.validate(selection, board)).to have_attributes(position: 1)
       end
     end
 
-    context "if the position is between 1 and 9 but not available" do
+    context "if the selection is between 1 and 9 but not available" do
       it "returns an object with a status of :space_taken and a position of nil" do
         selection = 2
 
