@@ -3,11 +3,15 @@ require "tictactoe"
 require "ostruct"
 
 RSpec.describe TicTacToe do
-  class TicTacToe::FakeDisplay
-    attr_reader :messages
+  X = "X"
+  O = "O"
 
-    def initialize
+  class FakeDisplay
+    attr_reader :messages, :input
+
+    def initialize(input: [])
       @messages = []
+      @input = input
     end
 
     def output(message)
@@ -16,7 +20,7 @@ RSpec.describe TicTacToe do
     end
 
     def input
-      :not_used
+      @input.shift
     end
   end
 
@@ -27,52 +31,81 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
+    attr_reader :token, :validator
+
+    def initialize(moves:, token:, validator:)
+      @moves = moves
+      @token = token
+      @validator = validator
+    end
+
     def selection(board)
+      @moves.shift
     end
   end
 
-  class TicTacToe::FakeBoard
+  class ValidatorWithNoMethods end
+
+  class BoardWithOutcomes
     attr_reader :grid
 
     def initialize
       @grid = []
     end
 
-    def place_token(position)
-      grid.push("X")
+    def place_token(position, token)
+      grid.push(token)
     end
 
     def get(position)
       grid[position - 1]
     end
 
-    def in_progress?
-      return true if grid.length <= 6
-      false
+    def outcome
+      return OpenStruct.new(status: :win, winner: X) if grid.length > 6
+      OpenStruct.new(status: :in_progress, winner: nil)
     end
   end
 
   describe "#run" do
     it "plays the game until an outcome" do
-      display = TicTacToe::FakeDisplay.new
+      display = FakeDisplay.new
       presenter = FakePresenter.new
-      board = TicTacToe::FakeBoard.new
-      player = FakePlayer.new
-      tictactoe = TicTacToe.new(presenter, display, board, player)
+      board = BoardWithOutcomes.new
+      validator = ValidatorWithNoMethods.new
+      player = FakePlayer.new(moves: [1, 3, 5, 7], token: X, validator: validator)
+      other_player = FakePlayer.new(moves: [2, 4, 6], token: O, validator: validator)
+      players = [player, other_player]
+
+      TicTacToe.new(presenter, display, board, players).run
+
       expected_boards = [
         "---------",
         "X--------",
-        "XX-------",
-        "XXX------",
-        "XXXX-----",
-        "XXXXX----",
-        "XXXXXX---",
-        "XXXXXXX--",
+        "XO-------",
+        "XOX------",
+        "XOXO-----",
+        "XOXOX----",
+        "XOXOXO---",
+        "XOXOXOX--",
       ]
 
-      tictactoe.run
-
       expect(display.messages).to eq(expected_boards)
+    end
+  end
+
+  describe "integration" do
+    it "ends with X winning the game" do
+      display = FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
+      presenter = TextPresenter.new
+      board = Board.new
+      validator = SelectionValidator.new
+      player = HumanPlayer.new(display: display, token: X, validator: validator)
+      other_player = HumanPlayer.new(display: display, token: O, validator: validator)
+      players = [player, other_player]
+      TicTacToe.new(presenter, display, board, players).run
+
+      expect(display.messages).to include(/X wins/)
     end
   end
 end

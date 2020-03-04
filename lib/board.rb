@@ -3,11 +3,10 @@ require "ostruct"
 class Board
   def initialize
     @grid = Array.new(9)
-    @tokens = {X: "X", O: "O"}
   end
 
-  def place_token(position)
-    grid[position - 1] = next_token
+  def place_token(position, token)
+    grid[position - 1] = token
   end
 
   def get(position)
@@ -25,17 +24,9 @@ class Board
     outcome
   end
 
-  def in_progress?
-    outcome.status == :in_progress
-  end
-
-  def next_token
-    grid.count(tokens[:X]) > grid.count(tokens[:O]) ? tokens[:O] : tokens[:X]
-  end
-
   private
 
-  attr_reader :grid, :tokens
+  attr_reader :grid
 
   def draw?
     grid.none?(&:nil?) && !winner
@@ -43,8 +34,7 @@ class Board
 
   def winner
     (rows + columns + diagonals).each do |triple|
-      return tokens[:X] if triple.all? { |position| get(position) == tokens[:X] }
-      return tokens[:O] if triple.all? { |position| get(position) == tokens[:O] }
+      return get(triple[0]) if triple.all? { |position| get(position) == get(triple[0]) }
     end
     nil
   end

@@ -3,14 +3,14 @@ require "tictactoe"
 
 RSpec.describe Board do
   subject(:board) { Board.new }
-  X = "X"
-  O = "O"
+  let(:x) { "X" }
+  let(:o) { "O" }
 
   describe "#place_token" do
     it "places the player's token on the board corresponding to the chosen space" do
-      board.place_token(4)
+      board.place_token(4, x)
 
-      expect(board.get(4)).to eq(X)
+      expect(board.get(4)).to eq(x)
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Board do
   describe "is_available?" do
     context "when the space on the board is not available for a token" do
       it "returns false" do
-        board.place_token(1)
+        board.place_token(1, x)
 
         expect(board.is_available?(1)).to eq(false)
       end
@@ -37,24 +37,29 @@ RSpec.describe Board do
   end
 
   def set_no_outcome
-    [1, 2, 3].each { |position| board.place_token(position) }
+    [1, 3].each { |position| board.place_token(position, x) }
+    board.place_token(2, O)
   end
 
   def set_draw
-    [1, 2, 3, 4, 6, 5, 7, 9, 8].each { |position| board.place_token(position) }
+    [1, 3, 6, 7, 8].each { |position| board.place_token(position, x) }
+    [2, 4, 5, 9].each { |position| board.place_token(position, o) }
   end
 
   describe "#outcome" do
     def set_diagonal_winner
-      [1, 2, 3, 4, 5, 6, 8, 7, 9].each { |position| board.place_token(position) }
+      [1, 3, 5, 8, 9].each { |position| board.place_token(position, x) }
+      [2, 4, 6, 7].each { |position| board.place_token(position, o) }
     end
 
     def set_column_winner
-      [1, 2, 4, 3, 7].each { |position| board.place_token(position) }
+      [1, 4, 7].each { |position| board.place_token(position, x) }
+      [2, 3].each { |position| board.place_token(position, o) }
     end
 
     def set_row_winner
-      [1, 4, 2, 7, 3].each { |position| board.place_token(position) }
+      [1, 2, 3].each { |position| board.place_token(position, x) }
+      [4, 7].each { |position| board.place_token(position, o) }
     end
 
     context "with a diagonal winner" do
@@ -62,7 +67,7 @@ RSpec.describe Board do
         set_diagonal_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: X)
+        expect(outcome).to have_attributes(status: :win, winner: x)
       end
     end
 
@@ -71,7 +76,7 @@ RSpec.describe Board do
         set_column_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: X)
+        expect(outcome).to have_attributes(status: :win, winner: x)
       end
     end
 
@@ -80,7 +85,7 @@ RSpec.describe Board do
         set_row_winner
         outcome = board.outcome
 
-        expect(outcome).to have_attributes(status: :win, winner: X)
+        expect(outcome).to have_attributes(status: :win, winner: x)
       end
     end
 
@@ -99,44 +104,6 @@ RSpec.describe Board do
         outcome = board.outcome
 
         expect(outcome).to have_attributes(status: :in_progress, winner: nil)
-      end
-    end
-  end
-
-  describe "in_progress?" do
-    it "returns true if the game is in_progress" do
-      set_no_outcome
-
-      expect(board.in_progress?).to eq(true)
-    end
-
-    it "returns false if the game is over" do
-      set_draw
-
-      expect(board.in_progress?).to eq(false)
-    end
-  end
-
-  describe "next_token" do
-    context "before a move do" do
-      it "returns the X token" do
-        expect(board.next_token).to eq(X)
-      end
-    end
-
-    context "after a move" do
-      it "returns the next token to be played" do
-        board.place_token(1)
-
-        expect(board.next_token).to eq(O)
-      end
-    end
-
-    context "after many moves" do
-      it "returns the next token to be played" do
-        (1..4).each { |position| board.place_token(position) }
-
-        expect(board.next_token).to eq(X)
       end
     end
   end

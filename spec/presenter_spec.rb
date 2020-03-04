@@ -5,7 +5,7 @@ require "ostruct"
 RSpec.describe TextPresenter do
   subject(:presenter) { TextPresenter.new }
 
-  class TextPresenter::FakeBoard
+  class BoardWithOutcomeInstance
     attr_reader :outcome
 
     def initialize(outcome)
@@ -23,7 +23,7 @@ RSpec.describe TextPresenter do
     context "without an outcome" do
       it "formats the board" do
         outcome = OpenStruct.new(status: :in_progress, winner: nil)
-        board = TextPresenter::FakeBoard.new(outcome)
+        board = BoardWithOutcomeInstance.new(outcome)
         blank_string = " "
         expected_board = <<~BOARD
 
@@ -43,7 +43,7 @@ RSpec.describe TextPresenter do
     context "when X wins" do
       it "displays the board and the outcome" do
         outcome = OpenStruct.new(status: :win, winner: "X")
-        board = TextPresenter::FakeBoard.new(outcome)
+        board = BoardWithOutcomeInstance.new(outcome)
         blank_string = " "
         expected_board = <<~BOARD
 
@@ -63,7 +63,7 @@ RSpec.describe TextPresenter do
     context "when O wins" do
       it "displays the board and the outcome" do
         outcome = OpenStruct.new(status: :win, winner: "O")
-        board = TextPresenter::FakeBoard.new(outcome)
+        board = BoardWithOutcomeInstance.new(outcome)
 
         expect(presenter.present(board)).to include("O wins!")
       end
@@ -72,7 +72,7 @@ RSpec.describe TextPresenter do
     context "when there is a draw" do
       it "displays the outcome" do
         outcome = OpenStruct.new(status: :draw, winner: nil)
-        board = TextPresenter::FakeBoard.new(outcome)
+        board = BoardWithOutcomeInstance.new(outcome)
 
         expect(presenter.present(board)).to include("Draw 😕")
       end
