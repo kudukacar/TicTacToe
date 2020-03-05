@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 require "ostruct"
 
 RSpec.describe TextPresenter do

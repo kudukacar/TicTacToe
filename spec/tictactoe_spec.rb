@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 require "ostruct"
 
 RSpec.describe TicTacToe do
@@ -38,7 +38,7 @@ RSpec.describe TicTacToe do
       @token = token
     end
 
-    def selection(board)
+    def selection
       @moves.shift
     end
   end
@@ -95,10 +95,11 @@ RSpec.describe TicTacToe do
       display = FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
-      validator = SelectionValidator.new
-      parse_input = ParseInput.new(display)
-      player = HumanPlayer.new(display: display, token: X, validator: validator, parse_input: parse_input)
-      other_player = HumanPlayer.new(display: display, token: O, validator: validator, parse_input: parse_input)
+      validator = PositionValidator.new(board)
+      parse_input = ParseInput.new
+      user = User.new(display)
+      player = HumanPlayer.new(user: user, token: X, validator: validator, parse_input: parse_input)
+      other_player = HumanPlayer.new(user: user, token: O, validator: validator, parse_input: parse_input)
       players = [player, other_player]
       TicTacToe.new(presenter, display, board, players).run
 

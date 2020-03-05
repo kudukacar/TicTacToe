@@ -1,12 +1,6 @@
 class ParseInput
-  attr_reader :display
-  
-  def initialize(display)
-    @display = display
-  end
-
-  def input_to_integer
-    Integer(display.input)
+  def to_integer(input)
+    Integer(input)
   rescue
     0
   end

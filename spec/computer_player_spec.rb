@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 
 RSpec.describe ComputerPlayer do
   class BoardWithFourAvailable
@@ -10,10 +10,10 @@ RSpec.describe ComputerPlayer do
 
   describe "#selection" do
     it "returns a selection available on the board" do
-      player = ComputerPlayer.new(token: "O")
       board = BoardWithFourAvailable.new
+      player = ComputerPlayer.new(token: "O", board: board)
 
-      expect(player.selection(board)).to eq(4)
+      expect(player.selection).to eq(4)
     end
   end
 end

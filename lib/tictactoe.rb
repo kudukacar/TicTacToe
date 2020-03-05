@@ -1,10 +1,3 @@
-require_relative "./display"
-require_relative "./presenter"
-require_relative "./board"
-require_relative "./player"
-require_relative "./validator"
-require_relative "./parse_input"
-
 class TicTacToe
   attr_reader :presenter, :display, :board, :players
 
@@ -27,7 +20,7 @@ class TicTacToe
   end
 
   def play_turn(player)
-    position = player.selection(board)
+    position = player.selection
     board.place_token(position, player.token)
   end
 
@@ -42,16 +35,4 @@ class TicTacToe
   def in_progress?
     board.outcome.status == :in_progress
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  display = Display.new($stdout, $stdin)
-  presenter = TextPresenter.new
-  board = Board.new
-  validator = SelectionValidator.new
-  parse_input = ParseInput.new(display)
-  first_player = HumanPlayer.new(display: display, token: "X", validator: validator, parse_input: parse_input)
-  second_player = ComputerPlayer.new(token: "O")
-  players = [first_player, second_player]
-  TicTacToe.new(presenter, display, board, players).run
 end
