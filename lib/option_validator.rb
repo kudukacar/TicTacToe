@@ -1,12 +1,12 @@
 class OptionValidator
-  attr_reader :options
+  attr_accessor :options
 
   ERROR_MESSAGES = {
     invalid_entry: "Invalid entry.",
   }
 
-  def initialize(options)
-    @options = options
+  def initialize
+    @options = 1
   end
 
   def error(selection)

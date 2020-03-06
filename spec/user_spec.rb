@@ -2,7 +2,7 @@ require "spec_helper"
 require "game"
 
 RSpec.describe User do
-  subject(:user) { User.new(display) }
+  subject(:user) { User.new(display: display, parse_input: parse_input) }
 
   class FakeDisplay
     attr_reader :messages, :input
@@ -43,13 +43,13 @@ RSpec.describe User do
       let(:display) { FakeDisplay.new(input: ["1"]) }
 
       it "prompts the user" do
-        user.valid_input(message: message, parse_input: parse_input, validator: validator)
+        user.valid_input(message: message, validator: validator)
 
         expect(display.messages).to include(/Please enter your selection/)
       end
 
       it "returns the user's entry" do
-        valid_input = user.valid_input(message: message, parse_input: parse_input, validator: validator)
+        valid_input = user.valid_input(message: message, validator: validator)
         expect(valid_input).to eq(1)
       end
     end
@@ -58,14 +58,14 @@ RSpec.describe User do
       let(:display) { FakeDisplay.new(input: ["2", "3", "1"]) }
 
       it "prompts the user for a response until receiving a valid entry" do
-        user.valid_input(message: message, parse_input: parse_input, validator: validator)
+        user.valid_input(message: message, validator: validator)
 
         expect(display.messages).to contain_exactly(/Please enter your selection/, /Invalid/, \
           /Please enter your selection/, /Invalid/, /Please enter your selection/)
       end
 
       it "returns the user's entry" do
-        valid_input = user.valid_input(message: message, parse_input: parse_input, validator: validator)
+        valid_input = user.valid_input(message: message, validator: validator)
         expect(valid_input).to eq(1)
       end
     end

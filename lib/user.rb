@@ -1,11 +1,12 @@
 class User
-  attr_reader :display
+  attr_reader :display, :parse_input
 
-  def initialize(display)
+  def initialize(display:, parse_input:)
     @display = display
+    @parse_input = parse_input
   end
 
-  def valid_input(message:, parse_input:, validator:)
+  def valid_input(message:, validator:)
     loop do
       display.output(message)
       input = parse_input.to_integer(display.input)

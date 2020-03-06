@@ -97,9 +97,9 @@ RSpec.describe TicTacToe do
       board = Board.new
       validator = PositionValidator.new(board)
       parse_input = ParseInput.new
-      user = User.new(display)
-      player = HumanPlayer.new(user: user, token: X, validator: validator, parse_input: parse_input)
-      other_player = HumanPlayer.new(user: user, token: O, validator: validator, parse_input: parse_input)
+      user = User.new(display: display, parse_input: parse_input)
+      player = HumanPlayer.new(user: user, token: X, validator: validator)
+      other_player = HumanPlayer.new(user: user, token: O, validator: validator)
       players = [player, other_player]
       TicTacToe.new(presenter, display, board, players).run
 

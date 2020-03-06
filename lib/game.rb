@@ -9,12 +9,11 @@ require_relative "./user"
 require_relative "./tictactoe"
 
 class Game
-  attr_reader :user, :game_options, :parse_input, :validator
+  attr_reader :user, :game_options, :validator
 
-  def initialize(user:, game_options:, parse_input:, validator:)
+  def initialize(user:, game_options:, validator:)
     @user = user
     @game_options = game_options
-    @parse_input = parse_input
     @validator = validator
   end
 
@@ -36,9 +35,9 @@ class Game
   end
 
   def selection(game_options_descriptions)
+    validator.options = game_options.keys.length
     user.valid_input(
       message: player_prompt(game_options_descriptions),
-      parse_input: parse_input,
       validator: validator
     )
   end
@@ -50,14 +49,14 @@ if $PROGRAM_NAME == __FILE__
   board = Board.new
   position_validator = PositionValidator.new(board)
   parse_input = ParseInput.new
-  user = User.new(display)
-  human_player = HumanPlayer.new(user: user, token: "X", validator: position_validator, parse_input: parse_input)
+  user = User.new(display: display, parse_input: parse_input)
+  human_player = HumanPlayer.new(user: user, token: "X", validator: position_validator)
   computer_player = ComputerPlayer.new(token: "O", board: board)
   game_options = {
     "You go first" => [human_player, computer_player],
     "Computer goes first" => [computer_player, human_player],
   }
-  option_validator = OptionValidator.new(game_options.keys.length)
-  players = Game.new(user: user, validator: option_validator, parse_input: parse_input, game_options: game_options).players
+  option_validator = OptionValidator.new
+  players = Game.new(user: user, validator: option_validator, game_options: game_options).players
   TicTacToe.new(presenter, display, board, players).run
 end

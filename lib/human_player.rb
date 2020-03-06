@@ -1,15 +1,14 @@
 class HumanPlayer
-  attr_reader :user, :token, :validator, :parse_input
+  attr_reader :user, :token, :validator
 
-  def initialize(token:, user:, validator:, parse_input:)
+  def initialize(token:, user:, validator:)
     @token = token
     @user = user
     @validator = validator
-    @parse_input = parse_input
   end
 
   def selection
-    user.valid_input(message: player_prompt, parse_input: parse_input, validator: validator)
+    user.valid_input(message: player_prompt, validator: validator)
   end
 
   private
