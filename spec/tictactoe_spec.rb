@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 require "ostruct"
 
 RSpec.describe TicTacToe do
@@ -31,20 +31,17 @@ RSpec.describe TicTacToe do
   end
 
   class FakePlayer
-    attr_reader :token, :validator
+    attr_reader :token
 
-    def initialize(moves:, token:, validator:)
+    def initialize(moves:, token:)
       @moves = moves
       @token = token
-      @validator = validator
     end
 
-    def selection(board)
+    def selection
       @moves.shift
     end
   end
-
-  class ValidatorWithNoMethods end
 
   class BoardWithOutcomes
     attr_reader :grid
@@ -72,9 +69,8 @@ RSpec.describe TicTacToe do
       display = FakeDisplay.new
       presenter = FakePresenter.new
       board = BoardWithOutcomes.new
-      validator = ValidatorWithNoMethods.new
-      player = FakePlayer.new(moves: [1, 3, 5, 7], token: X, validator: validator)
-      other_player = FakePlayer.new(moves: [2, 4, 6], token: O, validator: validator)
+      player = FakePlayer.new(moves: [1, 3, 5, 7], token: X)
+      other_player = FakePlayer.new(moves: [2, 4, 6], token: O)
       players = [player, other_player]
 
       TicTacToe.new(presenter, display, board, players).run
@@ -99,9 +95,11 @@ RSpec.describe TicTacToe do
       display = FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
-      validator = SelectionValidator.new
-      player = HumanPlayer.new(display: display, token: X, validator: validator)
-      other_player = HumanPlayer.new(display: display, token: O, validator: validator)
+      validator = PositionValidator.new(board)
+      parse_input = ParseInput.new
+      user = User.new(display: display, parse_input: parse_input)
+      player = HumanPlayer.new(user: user, token: X, validator: validator)
+      other_player = HumanPlayer.new(user: user, token: O, validator: validator)
       players = [player, other_player]
       TicTacToe.new(presenter, display, board, players).run
 

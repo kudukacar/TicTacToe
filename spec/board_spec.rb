@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 
 RSpec.describe Board do
   subject(:board) { Board.new }

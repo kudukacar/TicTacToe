@@ -1,5 +1,5 @@
 require "spec_helper"
-require "tictactoe"
+require "game"
 
 RSpec.describe Display do
   subject(:display) { Display.new(stdout, stdin) }
