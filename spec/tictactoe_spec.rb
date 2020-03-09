@@ -1,28 +1,11 @@
 require "spec_helper"
 require "game"
+require "fake_display"
 require "ostruct"
 
 RSpec.describe TicTacToe do
   X = "X"
   O = "O"
-
-  class FakeDisplay
-    attr_reader :messages, :input
-
-    def initialize(input: [])
-      @messages = []
-      @input = input
-    end
-
-    def output(message)
-      @messages << message
-      nil
-    end
-
-    def input
-      @input.shift
-    end
-  end
 
   class FakePresenter
     def present(board)
@@ -92,7 +75,7 @@ RSpec.describe TicTacToe do
 
   describe "integration" do
     it "ends with X winning the game" do
-      display = FakeDisplay.new(input: ["1", "2", "3", "4", "5", "6", "7"])
+      display = FakeDisplay.new(inputs: ["1", "2", "3", "4", "5", "6", "7"])
       presenter = TextPresenter.new
       board = Board.new
       validator = PositionValidator.new(board)

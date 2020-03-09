@@ -50,11 +50,16 @@ if $PROGRAM_NAME == __FILE__
   position_validator = PositionValidator.new(board)
   parse_input = ParseInput.new
   user = User.new(display: display, parse_input: parse_input)
-  human_player = HumanPlayer.new(user: user, token: "X", validator: position_validator)
-  computer_player = ComputerPlayer.new(token: "O", board: board)
+  X = "X"
+  O = "O"
+  first_human_player = HumanPlayer.new(user: user, token: X, validator: position_validator)
+  second_human_player = HumanPlayer.new(user: user, token: O, validator: position_validator)
+  first_computer_player = ComputerPlayer.new(token: X, board: board)
+  second_computer_player = ComputerPlayer.new(token: O, board: board)
   game_options = {
-    "You go first" => [human_player, computer_player],
-    "Computer goes first" => [computer_player, human_player],
+    "Human vs. Human" => [first_human_player, second_human_player],
+    "Human vs. Computer" => [first_human_player, second_computer_player],
+    "Computer vs. Computer" => [first_computer_player, second_computer_player],
   }
   option_validator = OptionValidator.new
   players = Game.new(user: user, validator: option_validator, game_options: game_options).players
