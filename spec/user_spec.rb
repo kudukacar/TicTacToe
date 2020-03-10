@@ -1,26 +1,9 @@
 require "spec_helper"
 require "game"
+require "fake_display"
 
 RSpec.describe User do
   subject(:user) { User.new(display: display, parse_input: parse_input) }
-
-  class FakeDisplay
-    attr_reader :messages, :input
-
-    def initialize(input: [])
-      @messages = []
-      @input = input
-    end
-
-    def output(message)
-      @messages << message
-      nil
-    end
-
-    def input
-      @input.shift
-    end
-  end
 
   class FakeParseInput
     def to_integer(input)
@@ -40,7 +23,7 @@ RSpec.describe User do
     let(:parse_input) { FakeParseInput.new }
 
     context "with a valid entry of 1" do
-      let(:display) { FakeDisplay.new(input: ["1"]) }
+      let(:display) { FakeDisplay.new(inputs: ["1"]) }
 
       it "prompts the user" do
         user.valid_input(message: message, validator: validator)
@@ -55,7 +38,7 @@ RSpec.describe User do
     end
 
     context "with an invalid entry" do
-      let(:display) { FakeDisplay.new(input: ["2", "3", "1"]) }
+      let(:display) { FakeDisplay.new(inputs: ["2", "3", "1"]) }
 
       it "prompts the user for a response until receiving a valid entry" do
         user.valid_input(message: message, validator: validator)

@@ -1,13 +1,8 @@
 require "spec_helper"
 require "game"
+require "fake_user"
 
 RSpec.describe Game do
-  class UserWithOneValidInput
-    def valid_input(message:, validator:)
-      1
-    end
-  end
-
   class PlayerWithoutMethods end
   class ComputerPlayerWithoutMethods end
   class ValidatorWithInitialize
